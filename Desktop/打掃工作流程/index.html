@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>打掃工作流程製作器 ｜ 特教輔助與自主生活訓練系統</title>
+  
+  <!-- Modern Typography from Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Noto+Sans+TC:wght@300;400;500;700;900&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome for high-quality premium icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===== TOP TOOLBAR ===== -->
+<div class="toolbar" id="toolbar">
+  <div class="toolbar-brand">
+    <i class="fa-solid fa-sparkles brand-sparkle"></i>
+    <span>打掃工作流程製作器</span>
+  </div>
+  
+  <div class="toolbar-middle">
+    <div class="preset-wrapper">
+      <i class="fa-solid fa-list-check preset-icon"></i>
+      <select id="presetSelector" class="preset-select">
+        <option value="" disabled>-- 選擇內建打掃流程範本 --</option>
+        <option value="classroom" selected>🧹 教室掃地與拖地 (預設)</option>
+        <option value="wipe_table">🧽 抹布擦桌椅</option>
+        <option value="trash_recycle">♻️ 倒垃圾與資源回收</option>
+        <option value="restroom_sink">🧴 廁所洗手台清潔</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="toolbar-actions">
+    <button class="btn btn-secondary" id="btnDesign"><i class="fa-solid fa-palette"></i> 版面設計</button>
+    <button class="btn btn-secondary" id="btnAddStep"><i class="fa-solid fa-plus"></i> 新增步驟</button>
+    <button class="btn btn-toggle" id="btnToggleEdit"><i class="fa-solid fa-pen-to-square"></i> 編輯模式</button>
+    <button class="btn btn-word" id="btnExportWord"><i class="fa-solid fa-file-word"></i> 匯出 Word</button>
+    <button class="btn btn-primary" id="btnPrint"><i class="fa-solid fa-print"></i> 列印海報</button>
+  </div>
+</div>
+
+<!-- ===== DESIGN & LAYOUT CUSTOMIZATION PANEL ===== -->
+<div class="design-panel" id="designPanel">
+  <div class="design-panel-header">
+    <span><i class="fa-solid fa-sliders"></i> 版面設計</span>
+    <button class="panel-close" id="designPanelClose">✕</button>
+  </div>
+  <div class="design-panel-body">
+
+    <!-- Theme selection -->
+    <div class="design-section">
+      <div class="design-section-title"><i class="fa-solid fa-brush"></i> 背景主題配色</div>
+      <div class="theme-grid" id="themeGrid">
+        <button class="theme-btn active" data-theme="mint" style="background: linear-gradient(135deg, #10b981, #047857)">薄荷綠</button>
+        <button class="theme-btn" data-theme="sky" style="background: linear-gradient(135deg, #0ea5e9, #0369a1)">天空藍</button>
+        <button class="theme-btn" data-theme="citrus" style="background: linear-gradient(135deg, #f97316, #c2410c)">檸檬黃</button>
+        <button class="theme-btn" data-theme="lavender" style="background: linear-gradient(135deg, #8b5cf6, #5b21b6)">薰衣草</button>
+        <button class="theme-btn" data-theme="rose" style="background: linear-gradient(135deg, #ec4899, #be185d)">櫻花粉</button>
+        <button class="theme-btn" data-theme="highcontrast" style="background: linear-gradient(135deg, #1f2937, #111827); color: #fbbf24; border: 1px solid #fbbf24;">高反差</button>
+      </div>
+    </div>
+
+    <!-- Layout Grid Columns -->
+    <div class="design-section">
+      <div class="design-section-title"><i class="fa-solid fa-grip"></i> 每行展示欄數</div>
+      <div class="col-grid" id="colGrid">
+        <button class="col-btn" data-cols="2">2 欄</button>
+        <button class="col-btn" data-cols="3">3 欄</button>
+        <button class="col-btn active" data-cols="4">4 欄</button>
+        <button class="col-btn" data-cols="5">5 欄</button>
+      </div>
+    </div>
+
+    <!-- Main Title font scale -->
+    <div class="design-section">
+      <div class="design-section-title"><i class="fa-solid fa-font"></i> 標題文字大小</div>
+      <input type="range" id="titleSizeSlider" min="0.6" max="2.2" step="0.1" value="1">
+    </div>
+
+    <!-- Step text font scale -->
+    <div class="design-section">
+      <div class="design-section-title"><i class="fa-solid fa-text-height"></i> 步驟說明大小</div>
+      <input type="range" id="stepTextSizeSlider" min="0.6" max="2.6" step="0.1" value="1">
+    </div>
+
+    <!-- Card style -->
+    <div class="design-section">
+      <div class="design-section-title"><i class="fa-solid fa-border-all"></i> 步驟卡片邊角</div>
+      <div class="col-grid">
+        <button class="card-style-btn active" data-cstyle="round">圓角卡</button>
+        <button class="card-style-btn" data-cstyle="sharp">方直角</button>
+        <button class="card-style-btn" data-cstyle="circle">圓形卡</button>
+      </div>
+    </div>
+
+    <!-- Footer Decorator -->
+    <div class="design-section">
+      <div class="design-section-title"><i class="fa-solid fa-wand-magic-sparkles"></i> 底部裝飾樣式</div>
+      <div class="col-grid">
+        <button class="deco-btn active" data-deco="cleaning">清潔 🧼</button>
+        <button class="deco-btn" data-deco="water">水珠 💦</button>
+        <button class="deco-btn" data-deco="custom">自訂 🖼️</button>
+        <button class="deco-btn" data-deco="none">無裝飾</button>
+      </div>
+    </div>
+
+    <!-- Custom Footer images upload -->
+    <div class="design-section" id="decoUploadSection" style="display: none;">
+      <div class="design-section-title">🖼️ 自訂底部裝飾圖 (最多5張)</div>
+      <div class="deco-slots" id="decoSlots">
+        <!-- Renders via JS -->
+      </div>
+      <div class="deco-slot-hint">點擊欄位上傳圖檔 ｜ 再點一次即可刪除</div>
+      <div class="design-section-title" style="margin-top:12px;">📏 裝飾圖片高度</div>
+      <input type="range" id="decoSizeSlider" min="30" max="220" value="65">
+    </div>
+
+    <!-- Print settings -->
+    <div class="design-section">
+      <div class="design-section-title"><i class="fa-solid fa-print"></i> 列印分頁：每頁展示步驟數</div>
+      <div class="col-grid">
+        <button class="print-btn" data-perpage="1">1 個 (大圖卡)</button>
+        <button class="print-btn" data-perpage="2">2 個</button>
+        <button class="print-btn active" data-perpage="4">4 個</button>
+        <button class="print-btn" data-perpage="8">8 個</button>
+        <button class="print-btn" data-perpage="0">全部 (海報)</button>
+      </div>
+      <div class="deco-slot-hint">大圖卡模式適合單獨列印貼在現場牆上</div>
+    </div>
+
+    <!-- Teacher and class label -->
+    <div class="design-section">
+      <div class="design-section-title"><i class="fa-solid fa-signature"></i> 班級/製作單位標籤</div>
+      <input type="text" id="labelInput" class="design-input" placeholder="例如：瑞翔日間作業所" maxlength="20">
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== POSTER WRAPPER ===== -->
+<div class="poster-wrapper" id="posterWrapper">
+  <div class="poster theme-mint" id="poster">
+
+    <!-- Interactive Progress Bar (Only visible in Preview/Practice Mode) -->
+    <div class="practice-progress-container" id="practiceProgressContainer">
+      <div class="progress-bar-wrapper">
+        <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
+      </div>
+      <div class="progress-text" id="progressText">實踐度：0% (完成 0/0 步)</div>
+    </div>
+
+    <!-- Title Section -->
+    <div class="poster-title-section">
+      <div class="title-left-deco">
+        <div class="sparkle-stack">
+          <i class="fa-solid fa-star-of-life deco-star"></i>
+          <i class="fa-solid fa-sparkles deco-sparkle"></i>
+        </div>
+      </div>
+      <div class="title-center">
+        <div class="main-title" id="mainTitle" contenteditable="false" spellcheck="false">教室打掃</div>
+        <div class="sub-title" id="subTitle" contenteditable="false" spellcheck="false">工作流程圖</div>
+      </div>
+      <div class="title-right-deco">
+        <div class="sparkle-stack">
+          <i class="fa-solid fa-sparkles deco-sparkle"></i>
+          <i class="fa-solid fa-star-of-life deco-star"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Decorative divider line -->
+    <div class="dot-divider" id="dotDivider">
+      <span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <!-- Main Steps Grid -->
+    <div class="steps-grid cols-4" id="stepsGrid">
+      <!-- Steps cards injected by JS -->
+    </div>
+
+    <!-- Poster Footer -->
+    <div class="poster-footer" id="posterFooter">
+      <div class="footer-deco deco-cleaning" id="footerDeco">
+        <!-- Injected icons/images -->
+      </div>
+      <div class="footer-label" id="footerLabel" contenteditable="false" spellcheck="false">瑞翔日間作業所</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== STEP EDIT POPUP MODAL ===== -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h2><i class="fa-solid fa-pen-to-square"></i> 編輯步驟詳細內容</h2>
+      <button class="modal-close" id="modalClose">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <label>步驟名稱 <span class="required">*</span></label>
+      <input type="text" id="editTitle" placeholder="例如：掃地" maxlength="20">
+
+      <label>簡短動作說明 (選填)</label>
+      <input type="text" id="editDesc" placeholder="說明如何執行（如：拿掃把把地上的灰塵掃進畚斗）" maxlength="40">
+
+      <label>步驟相片 / 示意圖</label>
+      <div class="img-drop-zone" id="imgDropZone">
+        <input type="file" id="imgFileInput" accept="image/*" capture="environment" style="display:none">
+        
+        <div class="img-preview" id="imgPreview">
+          <div class="img-placeholder-inner">
+            <span class="img-icon"><i class="fa-solid fa-camera"></i></span>
+            <span>點擊上傳、拍相片，或拖曳圖片到此處</span>
+            <span class="img-hint">支援各種常見圖片格式，系統會自動壓縮</span>
+          </div>
+        </div>
+        
+        <div class="img-actions">
+          <button class="btn btn-secondary" id="btnUploadImg"><i class="fa-solid fa-folder-open"></i> 選擇檔案</button>
+          <button class="btn btn-secondary" id="btnCameraImg"><i class="fa-solid fa-camera-retro"></i> 開相機拍照</button>
+          <button class="btn btn-secondary" id="btnRotateImg" title="順時針旋轉90度"><i class="fa-solid fa-rotate-right"></i> 旋轉 90°</button>
+          <button class="btn btn-danger-sm" id="btnClearImg"><i class="fa-solid fa-trash"></i> 清除相片</button>
+        </div>
+      </div>
+
+      <label>步驟排序控制</label>
+      <div class="order-controls">
+        <button class="btn btn-secondary" id="btnMoveUp"><i class="fa-solid fa-arrow-up"></i> 往前移 (上移)</button>
+        <button class="btn btn-secondary" id="btnMoveDown"><i class="fa-solid fa-arrow-down"></i> 往後移 (下移)</button>
+        <span class="order-hint" id="orderHint"></span>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-danger" id="btnDeleteStep"><i class="fa-solid fa-trash-can"></i> 刪除此步驟</button>
+      <button class="btn btn-secondary" id="btnCancelStep">放棄取消</button>
+      <button class="btn btn-primary" id="btnSaveStep"><i class="fa-solid fa-floppy-disk"></i> 儲存變更</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CELEBRATION CONGRATS MODAL (Practice completed) ===== -->
+<div class="congrats-overlay" id="congratsOverlay">
+  <div class="congrats-modal">
+    <div class="congrats-icon">🎉</div>
+    <h2>太棒了！打掃完成！</h2>
+    <p>你今天做得很棒，把環境整理得亮晶晶了！</p>
+    <div class="congrats-sparkles">
+      <span>✨</span><span>🧼</span><span>⭐</span><span>✨</span><span>🧴</span><span>⭐</span>
+    </div>
+    <button class="btn btn-primary" id="btnCongratsClose">太棒了，關閉視窗</button>
+  </div>
+</div>
+
+<!-- Toast notifications -->
+<div class="toast" id="toast"></div>
+
+<!-- Hidden inputs -->
+<input type="file" id="decoFileInput" accept="image/*" style="display:none" multiple>
+
+<!-- Javascript File -->
+<script src="app.js"></script>
+</body>
+</html>
