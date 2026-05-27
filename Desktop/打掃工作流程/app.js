@@ -1007,9 +1007,98 @@ document.querySelectorAll('.frame-btn').forEach(btn => {
     design.frameStyle = btn.dataset.frame;
     saveDesign();
     applyDesign();
+
+    // 自訂圖框上傳區顯示/隱藏
+    const uploadArea = document.getElementById('customFrameUploadArea');
+    if (design.frameStyle === 'custom') {
+      uploadArea.style.display = 'flex';
+    } else {
+      uploadArea.style.display = 'none';
+    }
+
+    // 更新所有卡片的 overlay
+    applyCustomFrameOverlay();
     showToast(`🖼️ 圖框樣式已切換！`);
   });
 });
+
+// ──────────────────────────────────────────────
+//  自訂圖框：上傳、預覽、套用到每張卡片
+// ──────────────────────────────────────────────
+
+// 從 localStorage 恢復自訂圖框
+let customFrameBase64 = localStorage.getItem('clean_custom_frame') || '';
+
+// 初始化預覽
+function refreshCustomFramePreview() {
+  const previewBox = document.getElementById('customFramePreview');
+  if (!previewBox) return;
+  if (customFrameBase64) {
+    previewBox.innerHTML = `<img src="${customFrameBase64}" alt="自訂圖框預覽">`;
+  } else {
+    previewBox.innerHTML = `<span style="color:#64748b; font-size:0.75rem;">尚未上傳圖框</span>`;
+  }
+}
+
+// 把自訂圖框 overlay 注入每張卡片的 .step-img-wrap
+function applyCustomFrameOverlay() {
+  document.querySelectorAll('.step-img-wrap').forEach(wrap => {
+    // 移除舊的 overlay
+    wrap.querySelectorAll('.custom-frame-overlay').forEach(el => el.remove());
+
+    // 只在自訂模式且有圖框時加入
+    if (design.frameStyle === 'custom' && customFrameBase64) {
+      const overlay = document.createElement('img');
+      overlay.src = customFrameBase64;
+      overlay.className = 'custom-frame-overlay';
+      overlay.alt = '圖框';
+      wrap.appendChild(overlay);
+    }
+  });
+}
+
+// 上傳圖框圖片
+document.getElementById('btnUploadFrame').addEventListener('click', () => {
+  document.getElementById('frameFileInput').click();
+});
+
+document.getElementById('frameFileInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) {
+    alert('❌ 請選擇圖片檔案（建議使用 PNG 透明背景）');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    customFrameBase64 = ev.target.result;
+    localStorage.setItem('clean_custom_frame', customFrameBase64);
+    refreshCustomFramePreview();
+    applyCustomFrameOverlay();
+    showToast('✅ 自訂圖框已套用！');
+  };
+  reader.readAsDataURL(file);
+  e.target.value = '';
+});
+
+// 清除自訂圖框
+document.getElementById('btnClearFrame').addEventListener('click', () => {
+  customFrameBase64 = '';
+  localStorage.removeItem('clean_custom_frame');
+  refreshCustomFramePreview();
+  applyCustomFrameOverlay();
+  showToast('🗑️ 已清除自訂圖框。');
+});
+
+// 頁面載入時如有自訂圖框則顯示上傳區
+window.addEventListener('DOMContentLoaded', () => {
+  refreshCustomFramePreview();
+  if (design.frameStyle === 'custom') {
+    const uploadArea = document.getElementById('customFrameUploadArea');
+    if (uploadArea) uploadArea.style.display = 'flex';
+  }
+});
+
 
 // ──────────────────────────────────────────────
 //  💾 存檔功能（匯出 JSON 檔案）
@@ -1022,7 +1111,8 @@ function saveDraft() {
     subtitle: subTitle.textContent.trim(),
     footer: footerLabel.textContent.trim(),
     design: design,
-    steps: steps
+    steps: steps,
+    customFrame: customFrameBase64 || ''
   };
 
   const json = JSON.stringify(draftData, null, 2);
@@ -1071,6 +1161,15 @@ function loadDraft(file) {
       // 確保 frameStyle 有值
       if (!design.frameStyle) design.frameStyle = 'none';
 
+      // 還原自訂圖框
+      if (data.customFrame) {
+        customFrameBase64 = data.customFrame;
+        localStorage.setItem('clean_custom_frame', customFrameBase64);
+      } else {
+        customFrameBase64 = '';
+        localStorage.removeItem('clean_custom_frame');
+      }
+
       // 同步儲存
       saveSteps();
       saveDesign();
@@ -1082,6 +1181,8 @@ function loadDraft(file) {
 
       restoreDesignUI();
       applyDesign();
+      refreshCustomFramePreview();
+      applyCustomFrameOverlay();
       render();
       updateProgressBar();
 
