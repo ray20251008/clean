@@ -77,7 +77,8 @@ let design = {
   deco: 'cleaning',
   perpage: 4,
   decoSize: 65,
-  stepTextSize: 1
+  stepTextSize: 1,
+  frameStyle: 'none'
 };
 let customDecos = [];
 let editMode = false;
@@ -432,6 +433,10 @@ function applyDesign() {
   // Card styles
   poster.classList.remove('cstyle-round', 'cstyle-sharp', 'cstyle-circle');
   poster.classList.add(`cstyle-${design.cardStyle}`);
+
+  // Frame styles
+  poster.classList.remove('frame-none', 'frame-thin', 'frame-thick', 'frame-dashed', 'frame-polaroid', 'frame-glow');
+  poster.classList.add(`frame-${design.frameStyle || 'none'}`);
 
   // Footer decorators
   footerDeco.className = `footer-deco deco-${design.deco}`;
@@ -846,6 +851,9 @@ function restoreDesignUI() {
   document.querySelectorAll('.print-btn').forEach(b => {
     b.classList.toggle('active', parseInt(b.dataset.perpage) === (design.perpage || 1));
   });
+  document.querySelectorAll('.frame-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.frame === (design.frameStyle || 'none'));
+  });
   decoSizeSlider.value = design.decoSize || 65;
 }
 
@@ -988,6 +996,114 @@ window.onload = () => {
   renderDecoSlots();
   showToast('🧼 打掃工作流程製作器載入完成！可自由切換上方打掃項目');
 };
+
+// ──────────────────────────────────────────────
+//  圖框樣式切換
+// ──────────────────────────────────────────────
+document.querySelectorAll('.frame-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.frame-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    design.frameStyle = btn.dataset.frame;
+    saveDesign();
+    applyDesign();
+    showToast(`🖼️ 圖框樣式已切換！`);
+  });
+});
+
+// ──────────────────────────────────────────────
+//  💾 存檔功能（匯出 JSON 檔案）
+// ──────────────────────────────────────────────
+function saveDraft() {
+  const draftData = {
+    version: 2,
+    savedAt: new Date().toLocaleString('zh-TW'),
+    title: mainTitle.textContent.trim(),
+    subtitle: subTitle.textContent.trim(),
+    footer: footerLabel.textContent.trim(),
+    design: design,
+    steps: steps
+  };
+
+  const json = JSON.stringify(draftData, null, 2);
+  const blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  const title = mainTitle.textContent.trim() || '打掃工作流程';
+  a.href     = url;
+  a.download = `${title}_存檔.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('💾 存檔完成！檔案已下載到您的電腦。');
+}
+
+document.getElementById('btnSaveDraft').addEventListener('click', saveDraft);
+
+// ──────────────────────────────────────────────
+//  📂 載入存檔功能（讀取 JSON 檔案）
+// ──────────────────────────────────────────────
+function loadDraft(file) {
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+
+      if (!data.steps || !Array.isArray(data.steps)) {
+        alert('❌ 這個檔案格式不正確，無法載入。');
+        return;
+      }
+
+      if (!confirm(`確定要載入「${data.title || '存檔'}」嗎？目前的內容會被取代。`)) return;
+
+      // 還原所有資料
+      steps = data.steps;
+      design = { ...design, ...(data.design || {}) };
+
+      if (data.title)    mainTitle.textContent   = data.title;
+      if (data.subtitle) subTitle.textContent    = data.subtitle;
+      if (data.footer) {
+        footerLabel.textContent = data.footer;
+        labelInput.value        = data.footer;
+      }
+
+      // 確保 frameStyle 有值
+      if (!design.frameStyle) design.frameStyle = 'none';
+
+      // 同步儲存
+      saveSteps();
+      saveDesign();
+      localStorage.setItem('clean_title_main', mainTitle.textContent);
+      localStorage.setItem('clean_title_sub',  subTitle.textContent);
+      localStorage.setItem('clean_footer',      footerLabel.textContent);
+
+      nextId = Math.max(0, ...steps.map(s => s.id || 0)) + 1;
+
+      restoreDesignUI();
+      applyDesign();
+      render();
+      updateProgressBar();
+
+      showToast(`✅ 已成功載入「${data.title || '存檔'}」！`);
+    } catch (err) {
+      alert('❌ 載入失敗：檔案可能已損壞。\n' + err.message);
+    }
+  };
+  reader.readAsText(file, 'utf-8');
+}
+
+document.getElementById('btnLoadDraft').addEventListener('click', () => {
+  document.getElementById('loadDraftInput').click();
+});
+
+document.getElementById('loadDraftInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (file) {
+    loadDraft(file);
+    e.target.value = ''; // 重設讓同一個檔案也能再次載入
+  }
+});
 
 // ──────────────────────────────────────────────
 //  匯出 Word 功能

@@ -42,9 +42,13 @@
     <button class="btn btn-secondary" id="btnDesign"><i class="fa-solid fa-palette"></i> 版面設計</button>
     <button class="btn btn-secondary" id="btnAddStep"><i class="fa-solid fa-plus"></i> 新增步驟</button>
     <button class="btn btn-toggle" id="btnToggleEdit"><i class="fa-solid fa-pen-to-square"></i> 編輯模式</button>
+    <button class="btn btn-save" id="btnSaveDraft"><i class="fa-solid fa-floppy-disk"></i> 存檔</button>
+    <button class="btn btn-load" id="btnLoadDraft"><i class="fa-solid fa-folder-open"></i> 載入存檔</button>
     <button class="btn btn-word" id="btnExportWord"><i class="fa-solid fa-file-word"></i> 匯出 Word</button>
     <button class="btn btn-primary" id="btnPrint"><i class="fa-solid fa-print"></i> 列印海報</button>
   </div>
+  <!-- 隱藏的 file input 供載入草稿使用 -->
+  <input type="file" id="loadDraftInput" accept=".json" style="display:none;">
 </div>
 
 <!-- ===== DESIGN & LAYOUT CUSTOMIZATION PANEL ===== -->
@@ -99,6 +103,32 @@
         <button class="card-style-btn" data-cstyle="sharp">方直角</button>
         <button class="card-style-btn" data-cstyle="circle">圓形卡</button>
       </div>
+    </div>
+
+    <!-- Frame style -->
+    <div class="design-section">
+      <div class="design-section-title"><i class="fa-solid fa-image"></i> 圖片圖框樣式</div>
+      <div class="frame-grid" id="frameGrid">
+        <button class="frame-btn active" data-frame="none">
+          <span class="frame-preview frame-preview-none">無框</span>
+        </button>
+        <button class="frame-btn" data-frame="thin">
+          <span class="frame-preview frame-preview-thin">細線框</span>
+        </button>
+        <button class="frame-btn" data-frame="thick">
+          <span class="frame-preview frame-preview-thick">粗框</span>
+        </button>
+        <button class="frame-btn" data-frame="dashed">
+          <span class="frame-preview frame-preview-dashed">虛線框</span>
+        </button>
+        <button class="frame-btn" data-frame="polaroid">
+          <span class="frame-preview frame-preview-polaroid">拍立得</span>
+        </button>
+        <button class="frame-btn" data-frame="glow">
+          <span class="frame-preview frame-preview-glow">彩光框</span>
+        </button>
+      </div>
+      <div class="deco-slot-hint" style="margin-top:6px;">選擇圖卡中照片的外框樣式</div>
     </div>
 
     <!-- Footer Decorator -->
