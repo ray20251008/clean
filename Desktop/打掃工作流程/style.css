@@ -1023,26 +1023,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
   object-fit: contain;
 }
 
-/* 自訂圖框疊加層（改放底層，支援非透明白底圖片） */
-.step-img-wrap .custom-frame-overlay {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: fill;
-  pointer-events: none;
-  z-index: 1;
-}
-
-/* 確保裡面的照片在圖框上方 */
-.step-img-wrap img:not(.custom-frame-overlay) {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
 /* ── 套用到 step-img-wrap 的圖框樣式 ── */
 
 /* 自訂圖框（加上內縮 padding，讓照片縮小放在圖框中央） */
@@ -1050,7 +1030,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   border: none;
   box-shadow: none;
   padding: 12%; /* 依圖框厚度內縮，確保照片不被邊框擋住 */
-  background: transparent;
+  background-color: transparent !important;
 }
 
 /* 無框（預設） */
