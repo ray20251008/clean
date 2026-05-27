@@ -1496,8 +1496,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
    ============================================================ */
 @media print {
   body {
-    background: #fff !important;
-    color: #000 !important;
     padding-top: 0 !important;
     padding-left: 0 !important;
   }
@@ -1517,7 +1515,6 @@ input[type="range"]::-webkit-slider-thumb:hover {
     min-height: 100vh !important;
     overflow: visible !important;
     padding: 0 !important;
-    background: #fff !important;
   }
   
   .edit-mode-badge, .add-card, .practice-check-overlay {
@@ -1525,37 +1522,28 @@ input[type="range"]::-webkit-slider-thumb:hover {
   }
   
   .step-card {
-    box-shadow: 0 0 0 1px #a8a8a8 !important;
-    background: #fff !important;
-    color: #000 !important;
-    border: 1px solid #777 !important;
     break-inside: avoid;
     page-break-inside: avoid;
   }
 
   .step-label {
-    background: #fff !important;
-    border-top: 1px solid #777 !important;
+    /* 保持原本的卡片顏色 */
   }
   
   .main-title {
-    color: #000 !important;
-    text-shadow: none !important;
+    /* 保持原本標題顏色 */
   }
   
   .sub-title {
-    color: #555 !important;
-    text-shadow: none !important;
+    /* 保持原本副標題顏色 */
   }
   
   .footer-label {
-    color: #000 !important;
-    text-shadow: none !important;
+    /* 保持原本底部文字顏色 */
   }
   
   .dot-divider span {
-    background: #555 !important;
-    box-shadow: none !important;
+    /* 保持原本分隔線顏色 */
   }
   
   /* Print Layout steps spacing overrides */
