@@ -1053,7 +1053,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   object-fit: contain;
   z-index: 2;
   box-sizing: border-box;
-  padding: 12%;
+  transform: scale(0.76); /* 避開 Chrome 列印時 img padding 失效的 Bug */
 }
 
 /* 無框（預設） */
