@@ -1040,20 +1040,21 @@ function refreshCustomFramePreview() {
   }
 }
 
-// 把自訂圖框 overlay 作為背景圖片注入每張卡片的 .step-img-wrap
+// 把自訂圖框 overlay 注入每張卡片的 .step-img-wrap (使用 CSS Grid 疊加，最相容列印)
 function applyCustomFrameOverlay() {
   document.querySelectorAll('.step-img-wrap').forEach(wrap => {
     // 移除舊的 overlay (如果有殘留的 img)
     wrap.querySelectorAll('.custom-frame-overlay').forEach(el => el.remove());
+    wrap.style.backgroundImage = ''; // 清除之前的舊設定
 
     // 只在自訂模式且有圖框時加入
     if (design.frameStyle === 'custom' && customFrameBase64) {
-      wrap.style.backgroundImage = `url('${customFrameBase64}')`;
-      wrap.style.backgroundSize = '100% 100%';
-      wrap.style.backgroundPosition = 'center';
-      wrap.style.backgroundRepeat = 'no-repeat';
-    } else {
-      wrap.style.backgroundImage = '';
+      const overlay = document.createElement('img');
+      overlay.src = customFrameBase64;
+      overlay.className = 'custom-frame-overlay';
+      overlay.alt = '圖框';
+      // 確保 overlay 出現在 HTML 後面，雖然 CSS Grid z-index 會控制，但這樣更保險
+      wrap.appendChild(overlay);
     }
   });
 }
