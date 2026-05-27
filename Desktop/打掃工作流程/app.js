@@ -411,6 +411,9 @@ function render() {
     addCard.addEventListener('click', addStep);
     stepsGrid.appendChild(addCard);
   }
+
+  // 確保重新渲染後，自訂圖框不會消失
+  applyCustomFrameOverlay();
 }
 
 // ──────────────────────────────────────────────
