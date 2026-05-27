@@ -853,30 +853,26 @@ input[type="range"]::-webkit-slider-thumb:hover {
 /* Image section */
 .step-img-wrap {
   width: 100%;
-  aspect-ratio: 4/3;
+  padding-bottom: 75%; /* 4:3 aspect ratio hack */
   background: #f1f5f9;
-  display: grid;
-  place-items: center;
+  display: block;
   overflow: hidden;
   position: relative;
 }
 
 .step-img-wrap > * {
-  grid-column: 1 / -1;
-  grid-row: 1 / -1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .cstyle-circle .step-img-wrap {
-  aspect-ratio: 1/1;
+  padding-bottom: 100%; /* 1:1 aspect ratio */
 }
 
 .step-img-wrap img {
-  width: 100%;
-  height: 100%;
-  min-width: 0;
-  min-height: 0;
-  max-width: 100%;
-  max-height: 100%;
   object-fit: contain;
 }
 
@@ -884,6 +880,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 5px;
   color: #64748b;
   font-size: 0.72rem;
@@ -1036,23 +1033,17 @@ input[type="range"]::-webkit-slider-thumb:hover {
 .poster.frame-custom .step-img-wrap {
   border: none;
   box-shadow: none;
-  padding: 0;
+  padding-bottom: 75%;
   background-color: transparent !important;
 }
 
 .poster.frame-custom .step-img-wrap .custom-frame-overlay {
-  width: 100%;
-  height: 100%;
   object-fit: fill;
   z-index: 1;
   pointer-events: none;
 }
 
 .poster.frame-custom .step-img-wrap img:not(.custom-frame-overlay) {
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  max-height: 100%;
   object-fit: contain;
   z-index: 2;
   box-sizing: border-box;
@@ -1574,8 +1565,8 @@ input[type="range"]::-webkit-slider-thumb:hover {
   }
   
   .steps-grid.print-pp-1 .step-card .step-img-wrap {
-    height: 65% !important;
-    aspect-ratio: auto !important;
+    height: auto !important;
+    padding-bottom: 75% !important;
   }
   
   .steps-grid.print-pp-1 .step-card:not(:last-child) {
